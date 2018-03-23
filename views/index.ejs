@@ -1,0 +1,99 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+<body style="margin: 1em 0;"> 
+    
+<div class="container" style="background-color: #729FCF; padding: 1em;">
+    <div class="container col-md-12">
+      <h2 class="text-center">Dodaj uporabnika v tabelo:</h2>
+      <br>
+      <form>
+        <div class="form-group col-md-4">
+          <label for="name">Name:</label>
+          <input id="name" type="name" class="form-control" placeholder="Enter name" name="name">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="lname">Lastname:</label>
+          <input id="lname" type="lname" class="form-control" placeholder="Enter last name" name="lname">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="email">Email:</label>
+          <input id="email" type="email" class="form-control" placeholder="Enter email" name="email">
+        </div>
+
+        <button class="btn btn-info pull-right" style="margin-right: 1em;" id="send">Dodaj uporabnika</button>
+        </form>
+    </div>
+    
+    <div class="container col-md-12">
+        <br>
+        <hr>
+    </div>
+    
+    <div class="container col-md-12">  
+      <table class="table table-bordered ">
+        <thead>
+          <tr style="background-color: #4985c1">
+            <th>Ime</th>
+            <th>Priimek</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody id="ajaxChangeThis">
+            
+            <% users.forEach(function(user) { %>
+              <tr style="background-color: #92b2d3">
+                <td><%= user.name; %></td>
+                <td><%= user.lastname; %></td>
+                <td><%= user.email; %></td>
+              </tr>
+            <% }); %>
+            
+        </tbody>
+      </table>
+        <div class="pull-right"><a href="/"><button class="btn btn-primary">Osveži podatke</button></a></div>
+    </div>
+</div>
+    
+    <script>
+        
+        var refreshInput = function() {
+            document.getElementById("name").value = "";
+            document.getElementById("lname").value = "";
+            document.getElementById("email").value = "";
+        }
+        
+        $("#send").click(function(event) {
+            var name = document.getElementById("name").value;
+            var lname = document.getElementById("lname").value;
+            var email = document.getElementById("email").value;
+            event.preventDefault();
+            if (name && lname && email) {
+                $.ajax({
+                    type: "POST",
+                    url: "/json",
+                    data: JSON.stringify({
+                        name: name,
+                        lname: lname,
+                        email: email
+                    }),
+                    dataType: "json",
+                    contentType: "application/json"
+                }).done(function(result) {
+                    if (result.status == 200) {
+                        $("#ajaxChangeThis").append("<tr style='background-color: #92b2d3'><td>" + name + "</td><td>" + lname + "</td><td>" + email + "</td><tr>"); 
+                        refreshInput();
+                    }
+                });
+            }
+        })
+        
+    </script>
+    
+</body>
+</html>
