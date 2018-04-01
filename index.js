@@ -2,6 +2,7 @@ var express = require("express");
 var app = express();
 var mysql = require("mysql");
 var bodyParser = require("body-parser");
+// just added some text
 
 var con = mysql.createConnection({
     host: "localhost",
@@ -21,19 +22,19 @@ app.post("/json", jsonParser, function(req, res) {
     var name = req.body.name;
     var lastname = req.body.lname;
     var email = req.body.email;
-    
+
     var message = {
         status: 200,
         success: "It worked"
     }
-    
+
     con.query("INSERT INTO user (name, lastname, email) VALUES (?, ?, ?)", [name, lastname, email], function(err) {
         if (err) throw err;
         message.status = 0;
     });
-    
+
     res.end(JSON.stringify(message));
-    
+
 });
 
 app.get("/", function(req, res) {
@@ -43,5 +44,5 @@ app.get("/", function(req, res) {
            users: rows
         });
     });
-    
+
 });
